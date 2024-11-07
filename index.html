@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="notification.css">
+</head>
+<body>
+    <div class="notification-container" id="crimson-notify">
+        <img id="notification-icon" class="notification-icon" alt="Icon">
+        <div id="notification-text" class="notification-text"></div>
+    </div>
+
+    <script>
+            var timeoutId;
+        window.addEventListener('message', function(event) {
+            var notificationContainer = document.getElementById('crimson-notify');
+            var iconElement = document.getElementById('notification-icon');
+            var textElement = document.getElementById('notification-text');
+
+            iconElement.onload = function() {
+                iconElement.style.display = 'inline'; // Show the icon if it was hidden
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            };
+
+            if (event.data.showNotification) {
+                // Display notification
+                //notificationContainer.style.background = 'url(' + event.data.backgroundPath + ') no-repeat';
+                //notificationContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'
+                iconElement.src = event.data.iconPath;
+                iconElement.style.filter = event.data.filter;
+                textElement.innerHTML = parseCustomTags(event.data.text);
+                notificationContainer.style.display = 'flex';
+
+                // Adjust the time the notification stays on screen if needed
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(function () {
+                    notificationContainer.style.display = 'none';
+                }, 5000); // Hides the notification after 5 seconds, adjust as needed
+            } else if (event.data.hideNotification) {
+                // Hide notification
+                notificationContainer.style.display = 'none';
+            }
+        });
+
+        function isValidColor(color) {
+            // You might want to implement a more robust color validation
+            return /^#[0-9A-Fa-f]{6}$/.test(color); // Simple validation for hexadecimal colors
+        }
+
+        function parseCustomTags(text) {
+            // Replace ~e~ with a span element for red text
+            text = text.replace(/~color\((.*?)\)~/g, function(match, color) {
+                // Ensure that the color value is valid (you might want to add more validation)
+                color = isValidColor(color) ? color : 'black';
+                return '<span style="color: ' + color + ';">';
+            });
+            
+            text = text.replace(/~copy (.*?)~/g, function(match, color) {
+                // Ensure that the color value is valid (you might want to add more validation)
+                var textarea = document.createElement('textarea');
+                textarea.value = color;
+                document.body.appendChild(textarea);
+                
+                // Select and copy the text from the textarea
+                textarea.select();
+                document.execCommand('copy');
+                
+                // Remove the temporary textarea
+                document.body.removeChild(textarea);
+                return color;
+            });
+
+            text = text.replace(/<img '(.*?)'>/g, function(match, imageUrl) {
+                // Dynamically calculate font size and set image size
+                var fontSize = getComputedStyle(document.body).fontSize;
+                return '<img src="' + imageUrl + '" alt="Image" style="width: ' + 512 + 'px; height: ' + 512 + 'px;">';
+            });
+
+            text = text.replace(/~red(.*?)~/g, '<span style="color: red;">$1</span>');
+            
+            // Replace <br> with an actual line break
+            text = text.replace(/<br>/g, '<br>');
+            
+            text = text.replace(/~span (.*?)~/g, '<span $1 </span>');
+            text = text.replace(/~end~/g, '</span>');
+
+            return text;
+        }
+
+        function HideNotification() {
+            var notificationContainer = document.getElementById('crimson-notify');
+            notificationContainer.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
