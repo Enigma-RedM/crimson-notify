@@ -79,14 +79,6 @@
                 return '<img src="' + imageUrl + '" alt="Image" style="width: ' + 512 + 'px; height: ' + 512 + 'px;">';
             });
 
-            text = text.replace(/~red(.*?)~/g, '<span style="color: red;">$1</span>');
-            
-            // Replace <br> with an actual line break
-            text = text.replace(/<br>/g, '<br>');
-            
-            text = text.replace(/~span (.*?)~/g, '<span $1 </span>');
-            text = text.replace(/~end~/g, '</span>');
-
             return text;
         }
 
