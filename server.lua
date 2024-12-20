@@ -16,7 +16,7 @@ if Config.TxDirectMessage then
 
         local admin = Config.AdminNameInMessages
             
-        TriggerClientEvent('crimson:notify:show', eventData.target, "~color(#00ffff)~(( "..eventData.message.." ))~end~"..(admin and "<h6>Admin: "..eventData.author.."</h6>" or ""), 'img/nil.png', nil, sound, set)
+        TriggerClientEvent('crimson:notify:show', eventData.target, "~color(#00ffff)~(( "..eventData.message.." ))"..(admin and "<h6>Admin: "..eventData.author.."</h6>" or ""), 'img/nil.png', nil, sound, set)
     end)
 end
 
@@ -27,7 +27,7 @@ if Config.TxWarnPlayer then
 
         local admin = Config.AdminNameInPunishments
             
-        TriggerClientEvent('crimson:notify:show', eventData.targetNetId, "~color(#ffff00)~<h1>WARNING</h1>"..eventData.reason.."~end~"..(admin and "<h6>Admin: "..eventData.author.."</h6>" or ""), 'img/nil.png', nil, sound, set)
+        TriggerClientEvent('crimson:notify:show', eventData.targetNetId, "~color(#ffff00)~<h1>WARNING</h1>"..eventData.reason..""..(admin and "<h6>Admin: "..eventData.author.."</h6>" or ""), 'img/nil.png', nil, sound, set)
     end)
 end
 
